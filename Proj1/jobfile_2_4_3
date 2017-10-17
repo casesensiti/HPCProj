@@ -1,0 +1,10 @@
+#PBS -l nodes=1:nogpu:ppn=1,walltime=01:00:00
+
+module load gcc-4.6.2
+module load mvapich2-1.9a2/gnu-4.6.2
+
+JOB_PATH=/home/ywang156/HPCProj/Proj1
+
+cd $JOB_PATH
+
+mpirun ./run2_4_3

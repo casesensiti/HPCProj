@@ -1,0 +1,20 @@
+Size of matrix: 2048 * 2048
+
+Calling dgemm0.
+Time used: 597520.000000ms
+Performance (in Gflops): 0.028752
+
+Using blocking size: 40
+
+Calling dgemm31 - blocking ikj with register reuse.
+Time used: 8030.000000ms
+Performance (in Gflops): 2.139461
+Maximum diff between dgemm0 and dgemm21: 0.000000000000000
+
+Using blocking size: 60
+
+Calling dgemm31 - blocking ikj with register reuse.
+Time used: 7500.000000ms
+Performance (in Gflops): 2.290649
+Maximum diff between dgemm0 and dgemm21: 0.000000000000000
+

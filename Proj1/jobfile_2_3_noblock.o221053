@@ -1,0 +1,36 @@
+Size of matrix: 2048 * 2048
+
+Calling dgemm0.
+Time used: 640560.000000ms
+Performance (in Gflops): 0.026820
+
+Calling dgemm11 - ijk.
+Time used: 466360.000000ms
+Performance (in Gflops): 0.036838
+Maximum diff between dgemm0 and dgemm11: 0.000000000000000
+
+Calling dgemm12 - ikj.
+Time used: 124890.000000ms
+Performance (in Gflops): 0.137560
+Maximum diff between dgemm0 and dgemm12: 0.000000000000000
+
+Calling dgemm13 - jik.
+Time used: 511950.000000ms
+Performance (in Gflops): 0.033558
+Maximum diff between dgemm0 and dgemm13: 0.000000000000000
+
+Calling dgemm14 - jki.
+Time used: 796850.000000ms
+Performance (in Gflops): 0.021560
+Maximum diff between dgemm0 and dgemm14: 0.000000000000000
+
+Calling dgemm15 - kij.
+Time used: 126360.000000ms
+Performance (in Gflops): 0.135960
+Maximum diff between dgemm0 and dgemm15: 0.000000000000000
+
+Calling dgemm16 - kji.
+Time used: 808210.000000ms
+Performance (in Gflops): 0.021257
+Maximum diff between dgemm0 and dgemm16: 0.000000000000000
+
