@@ -1,5 +1,9 @@
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
 #include <ctime>
+#include "lapacke.h"
+#include "blas.h"
 using namespace std;
 
 void dump (double *c, int n);
@@ -12,11 +16,11 @@ void dgemm31 (double *a, double *b, double *c, int i0, int j0, int kStart, int k
 
 int main(int argc, char* argv[])
 {
-    int n; // width of matrix
-    if (argc == 1) n = 1000;
-    else {
-        n = std::atoi(argv[1]);
-    }
+    int n = 1000; // width of matrix
+    int step = 10; // step size for blocked GEPP
+    if (argc >= 2) n = std::atoi(argv[1]);
+    if (argc >= 3) step = std::atoi(argv[2]);
+    printf("Matrix size: %d * %d, step size: %d\n", n, n, step);
     // allocate memory
     double *A = (double*) malloc(sizeof(double) * n * n);
     double *AT = (double*) malloc(sizeof(double) * n * n);
@@ -31,7 +35,8 @@ int main(int argc, char* argv[])
         bCopy[i] = b[i];
     }
     trans(AT, A, n); // transpose A into AT, A is used for LAPACK, AT is used for my implementation
-
+    clock_t start;
+    double elapse;
     // solve using LAPACK
     char    TRANS = 'N';
     int     INFO = 0;
@@ -39,8 +44,12 @@ int main(int argc, char* argv[])
     int     LDB = n;
     int     N = n;
 
-
+    printf("Solving using lapack degtrf\n");
+    start = clock();
     LAPACK_dgetrf(&N,&N,A,&LDA,IPIV,&INFO);
+    elapse = clock() - start;
+    printf("Time used in factorization: %fms\n", 1000 * elapse / CLOCKS_PER_SEC);
+    printf("Performance (in Gflops): %f\n", (2.0/3) * n * n * n * CLOCKS_PER_SEC / (elapse * 1000000000));
 
     char     SIDE = 'L';
     char     UPLO = 'L';
@@ -64,21 +73,21 @@ int main(int argc, char* argv[])
 
 
     // solve using mydegtrf
-    printf("Solving using mydegtrf\n");
+    printf("\nSolving using blocked mydegtrf\n");
 
     // reset IPIV
     for (int i = 0; i < n ; i++) IPIV[i] = i; 
 
-    clock_t start = clock();
+    start = clock();
     //mydegtrf(3, AT, IPIV);
-    mydegtrf_blocked(n, AT, IPIV, 10);
-    double elapse = clock() - start;
+    mydegtrf_blocked(n, AT, IPIV, step);
+    elapse = clock() - start;
     printf("Time used in factorization: %fms\n", 1000 * elapse / CLOCKS_PER_SEC);
-    printf("Performance (in Gflops): %f\n", n * n * n * CLOCKS_PER_SEC / (elapse * 1000000000));
+    printf("Performance (in Gflops): %f\n", (2.0/3) * n * n * n * CLOCKS_PER_SEC / (elapse * 1000000000));
 
     mydtrsm(n, AT, bCopy, IPIV, true, res);
     mydtrsm(n, AT, res, IPIV, false, bCopy);
-    printf("Maximum diff between results using LAPCAK and mydegtrf: %.15f\n", verify(b, bCopy, n, 1));
+    printf("Maximum diff between results using LAPCAK and mydegtrf: %.15f\n\n", verify(b, bCopy, n, 1));
 
     // free memory
     free(A);
