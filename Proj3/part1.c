@@ -3,7 +3,8 @@
 #include <math.h>
 
 int main (int argc, char* argv[]) {
-    int p, id, rc, i, global_count = 0;
+    int p, id, rc, global_count = 0;
+    long long i;
     // mpi init
     rc = MPI_Init(&argc, &argv);
     if (rc != MPI_SUCCESS) {
@@ -16,7 +17,7 @@ int main (int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
 
     // partitioning problem
-    long long n = 1000000;
+    long long n = 10000000000;
     long long nElements = (n + 1) / 2 - 1; // suitable for even and odd numbers
     long long low = (id * nElements) / p;
     long long high = ((id + 1) * nElements) / p - 1;
@@ -39,7 +40,7 @@ int main (int argc, char* argv[]) {
     for (i = 0; i < size; i++) mark[i] = 0;    
     // start loop
     long long prime = 3;
-    int index = 0;
+    long long index = 0;
 
     while (index < size && prime * prime <= n) {
         long long start = (prime * prime - 3) / 2;
@@ -48,11 +49,11 @@ int main (int argc, char* argv[]) {
             first = prime - (low - start) % prime; 
             first %= prime;
         } else first = start - low;
-        for (int i = first; i < size; i+= prime) {
+        for (i = first; i < size; i+= prime) {
             mark[i] = 1; 
         }
         if (!id) {
-            while (mark[++index]); 
+            while (index < size && mark[++index]); 
             prime = 2 * index + 3;
         }
         MPI_Bcast(&prime, 1, MPI_LONG_LONG, 0, MPI_COMM_WORLD);

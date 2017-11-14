@@ -1,20 +1,26 @@
-tardis: part1 part2
-	qsub -v msize=1000,JOB_PATH=`pwd` -o job1_1000.out jobfile_1
-	qsub -v msize=2000,JOB_PATH=`pwd` -o job1_2000.out jobfile_1
-	qsub -v msize=3000,JOB_PATH=`pwd` -o job1_3000.out jobfile_1
-	qsub -v msize=4000,JOB_PATH=`pwd` -o job1_4000.out jobfile_1
-	qsub -v msize=5000,JOB_PATH=`pwd` -o job1_5000.out jobfile_1
-	qsub -v msize=1000,JOB_PATH=`pwd`,step=20 -o job2_1000_20.out jobfile_2
-	qsub -v msize=2000,JOB_PATH=`pwd`,step=20 -o job2_2000_20.out jobfile_2
-
+test1:   part1
+	qsub -v prog=./part1,JOB_PATH=`pwd` -o results11 jobfile_1
+	qsub -v prog=./part1,JOB_PATH=`pwd` -o results12 jobfile_2
+	qsub -v prog=./part1,JOB_PATH=`pwd` -o results13 jobfile_3
+	qsub -v prog=./part1,JOB_PATH=`pwd` -o results14 jobfile_4
+test2:   part2
+	qsub -v prog=./part2,JOB_PATH=`pwd` -o results21 jobfile_1
+	qsub -v prog=./part2,JOB_PATH=`pwd` -o results22 jobfile_2
+	qsub -v prog=./part2,JOB_PATH=`pwd` -o results23 jobfile_3
+	qsub -v prog=./part2,JOB_PATH=`pwd` -o results24 jobfile_4
+test3:   part3
+	qsub -v prog=./part3,JOB_PATH=`pwd` -o results31 jobfile_1
+	qsub -v prog=./part3,JOB_PATH=`pwd` -o results32 jobfile_2
+	qsub -v prog=./part3,JOB_PATH=`pwd` -o results33 jobfile_3
+	qsub -v prog=./part3,JOB_PATH=`pwd` -o results34 jobfile_4
 local: part1 part2
 	./part1 500
 	./part2 500 20
-part1: part1.cpp
-	g++ -o part1 part1.cpp -I/opt/lapack/include /opt/lapack/lib/liblapacke.a /opt/lapack/lib/liblapack.a /opt/lapack/lib/librefblas.a -lgfortran -lm
-	
-part2: part2.cpp
-	g++ -O3 -o part2 part2.cpp -I/opt/lapack/include /opt/lapack/lib/liblapacke.a /opt/lapack/lib/liblapack.a /opt/lapack/lib/librefblas.a -lgfortran -lm
-
+part1: part1.c
+	mpicc -std=c99 -o part1 part1.c	
+part2: part2.c
+	mpicc -std=c99 -o part2 part2.c	
+part3: part3.c
+	mpicc -std=c99 -o part3 part3.c	
 clean:
-	rm part1 part2
+	rm part1 part2 part3
